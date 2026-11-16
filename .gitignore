@@ -1,0 +1,7 @@
+# local test artifacts / scratch
+*.dmg
+*.zip
+.work/
+tmp/
+run.log
+node_modules/

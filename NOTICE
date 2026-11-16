@@ -1,0 +1,22 @@
+NOTICE
+
+Manus Studio is a desktop application published by Manus (https://manus.im).
+The names "Manus" and "Manus Studio", along with the application itself and
+its assets, are the property of their respective owner and are protected by
+their own terms of service and copyright.
+
+This repository does NOT include, host, mirror, or redistribute:
+  - the Manus Studio application or any of its code or assets,
+  - the Electron runtime,
+  - any binaries built from either.
+
+The install script (install.sh) downloads the official Manus Studio macOS
+installer directly from Manus's own servers (download.manus.im) and runs it
+locally on the user's machine, on an official Linux build of the Electron
+runtime. The application payload remains governed by Manus's own terms.
+
+This project is an unofficial community wrapper. It is not affiliated with,
+endorsed by, or sponsored by Manus.
+
+If you are a representative of Manus and object to this project, please
+open an issue and it will be removed promptly.

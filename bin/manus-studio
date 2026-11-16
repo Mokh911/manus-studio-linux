@@ -1,0 +1,51 @@
+#!/usr/bin/env bash
+# Manus Studio on Linux — launcher
+#
+# Runs the OFFICIAL Manus Studio app payload (app.asar extracted from the
+# official macOS build) on the Electron runtime for Linux x86_64.
+#
+# Known limitations on Linux (see docs/TESTING.md):
+#   * "My Computer" / local computer-use requires the manus-computer-operator
+#     + addon helpers, which ship for macOS/Windows only. Not available here.
+#   * The macOS/Windows tray integration is unavailable; closing the window quits.
+set -euo pipefail
+
+INST="${MANUS_STUDIO_HOME:-$HOME/.local/share/manus-studio}"
+APP_DIR="$INST/app"
+
+# Electron runtime: bundled copy first, then any locally installed Electron.
+ELECTRON="$INST/electron/electron"
+if [ ! -x "$ELECTRON" ]; then
+  for c in \
+    "$INST/node_modules/electron/dist/electron" \
+    "$HOME/.local/share/manus-desktop/node_modules/electron/dist/electron"
+  do
+    if [ -x "$c" ]; then ELECTRON="$c"; break; fi
+  done
+fi
+if [ ! -x "$ELECTRON" ]; then
+  echo "manus-studio: Electron runtime not found under $INST — run install.sh first" >&2
+  exit 1
+fi
+
+# App payload: extracted directory (package.json) or the raw .asar archive.
+if [ -f "$APP_DIR/package.json" ]; then
+  APP_PATH="$APP_DIR"
+elif [ -f "$APP_DIR/app.asar" ]; then
+  APP_PATH="$APP_DIR/app.asar"
+else
+  echo "manus-studio: app payload not found under $APP_DIR — run install.sh first" >&2
+  exit 1
+fi
+
+# Dedicated profile so this install does not clobber other Manus wrappers.
+UD="${MANUS_STUDIO_USER_DATA:-$HOME/.config/Manus Studio}"
+mkdir -p "$UD"
+
+exec "$ELECTRON" "$APP_PATH" \
+  --no-sandbox \
+  --disable-dev-shm-usage \
+  --disable-gpu \
+  --enable-unsafe-swiftshader \
+  --user-data-dir="$UD" \
+  "$@"
